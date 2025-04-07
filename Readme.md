@@ -15,17 +15,12 @@ This project demonstrates an end-to-end pipeline for running automated web tasks
 
 ## Architecture (Conceptual)
 
-+-----------------+      +---------------------+      +--------------------+      +--------------------+
-| Agent Runner(s) |----->| Kafka               |----->| Spark Processor    |----->| PostgreSQL         |
-| (agent_runner.py|      | (Logs & Status Topics|      | (spark_processor.py|      | (test_runs,       |
-|  w/ browser-use)|      |  in Docker)         |      |  reads Kafka)      |      |  agent_logs tables)|
-+-----------------+      +---------------------+      +--------------------+      +--------------------+
-^
-|
-+--------------------+
-| Data Viewer        |
-| (dataset_viewer.py)|
-+--------------------+
+
+graph TD
+    A[Agent Runner(s)<br/>(agent_runner.py w/ browser-use)] --> B(Kafka<br/>Logs & Status Topics<br/>in Docker);
+    B --> C[Spark Processor<br/>(spark_processor.py reads Kafka)];
+    C --> D[(PostgreSQL<br/>test_runs, agent_logs)];
+    D --> E[Data Viewer<br/>(dataset_viewer.py)];
 
 
 ## Prerequisites
