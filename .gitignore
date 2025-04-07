@@ -1,0 +1,20 @@
+# Python cache and virtual environment
+__pycache__/
+venv/
+*.pyc
+*.pyo
+*.pyd
+
+# Secrets - DO NOT COMMIT YOUR .env FILE!
+.env
+
+# Spark state
+spark_checkpoints/
+
+.DS_Store
+Thumbs.db
+
+browser-use/
+
+*.png
+*.csv

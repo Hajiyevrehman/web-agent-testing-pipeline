@@ -1,0 +1,48 @@
+# docker-compose.yml
+version: '3.7' # You can remove this line if you got the warning, it's optional now
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "2181:2181"
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      # Use localhost here to match agent_runner.py KAFKA_BROKER setting
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+
+  # --- ADD THIS POSTGRES SERVICE ---
+  postgres:
+    image: postgres:15 # Using PostgreSQL version 15
+    container_name: postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: web_test_results    # Database name Spark will connect to
+      POSTGRES_USER: testuser          # Username for Spark connection
+      POSTGRES_PASSWORD: testpassword  # Password for Spark connection
+    ports:
+      - "5432:5432" # Map host port 5432 to container port 5432
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist database data
+
+# --- ADD THIS VOLUMES DEFINITION AT THE END ---
+volumes:
+  postgres_data:
+    driver: local # Use the local driver for persistence

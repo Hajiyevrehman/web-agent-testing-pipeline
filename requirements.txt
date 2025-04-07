@@ -1,0 +1,17 @@
+# --- Core Application & LLM Dependencies ---
+python-dotenv
+langchain-openai
+httpx~=0.25  
+
+
+# --- Kafka Client ---
+kafka-python
+
+# --- Spark ---
+pyspark
+
+# --- PostgreSQL Driver ---
+psycopg2-binary 
+
+# --- Utilities ---
+tabulate      
